@@ -1,11 +1,13 @@
 $(document).ready(function () {
     const socket = io()
+    const DATE_FORMAT = 'hh:mm:ss'
 
     function addMessageToList(message) {
         const $messages = $('#messages')
+        const momentTS =  moment.utc(message.date)
 
         const li = `<li>
-        <em>${message.date}</em>: 
+        <em>${momentTS.local().format(DATE_FORMAT)}</em>: 
         <strong>${message.text}</strong>
         </li>`
 
@@ -14,10 +16,10 @@ $(document).ready(function () {
 
     function buildMessageFromText(text) {
         const timestamp = moment().format('x')
-        const date = moment().utc(timestamp)
+        const date = moment().valueOf()
         return {
             text,
-            date: date.local().format('HH:mm')
+            date
         }
     }
 

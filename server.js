@@ -6,6 +6,10 @@ const path = require('path')
 const io = require('socket.io')(http)
 const moment = require('moment')
 
+const Message = require('./classes/message.class')
+
+
+
 app.use(express.static(path.join(__dirname, 'public')))
 
 io.on('connection', (socket) => {
@@ -17,10 +21,8 @@ io.on('connection', (socket) => {
         socket.broadcast.emit('message', message)
     })
 
-    socket.emit('message', {
-        text: 'Welcome to the Chat Application',
-        date: date.local().format('HH:mm')
-    })
+    const welcome = new Message('Welcome to the Chat Application')
+    welcome.send(socket)
 })
 
 http.listen(PORT, () => {
