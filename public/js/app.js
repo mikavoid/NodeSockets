@@ -13,9 +13,11 @@ $(document).ready(function () {
     }
 
     function buildMessageFromText(text) {
+        const timestamp = moment().format('x')
+        const date = moment().utc(timestamp)
         return {
             text,
-            date: new Date().toDateString()
+            date: date.local().format('HH:mm')
         }
     }
 

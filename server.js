@@ -4,10 +4,12 @@ const app = express()
 const http = require('http').Server(app)
 const path = require('path')
 const io = require('socket.io')(http)
+const moment = require('moment')
 
 app.use(express.static(path.join(__dirname, 'public')))
 
 io.on('connection', (socket) => {
+    const date = moment().utc(moment().format('x'))
     console.log('user connected via socket.io')
 
     socket.on('message', (message) => {
@@ -17,7 +19,7 @@ io.on('connection', (socket) => {
 
     socket.emit('message', {
         text: 'Welcome to the Chat Application',
-        date: new Date().toDateString()
+        date: date.local().format('HH:mm')
     })
 })
 
