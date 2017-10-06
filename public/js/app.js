@@ -1,5 +1,8 @@
 $(document).ready(function () {
     const socket = io()
+    const name = getQueryVariable('name') || 'Anonymous'
+    const room = getQueryVariable('room') || 'General'
+
     const DATE_FORMAT = 'hh:mm:ss'
 
     function addMessageToList(message) {
@@ -7,7 +10,7 @@ $(document).ready(function () {
         const momentTS =  moment.utc(message.date)
 
         const li = `<li>
-        <em>${momentTS.local().format(DATE_FORMAT)}</em>: 
+        ${message.name} - (<em>${momentTS.local().format(DATE_FORMAT)}</em>): 
         <strong>${message.text}</strong>
         </li>`
 
@@ -19,12 +22,18 @@ $(document).ready(function () {
         const date = moment().valueOf()
         return {
             text,
+            name,
             date
         }
     }
 
     socket.on('connect', function () {
-        console.log('Connected to socket io')
+        const $meta = $('#meta')
+        const p = `<p>
+        <em>${name}</em> has joined the room : <strong>${room}</strong>
+        </p>`
+
+        $meta.append(p)
     })
 
     socket.on('message', function (message) {
