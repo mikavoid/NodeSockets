@@ -10,6 +10,25 @@ const Message = require('./classes/message.class')
 
 const clientInfo = {}
 
+function sendCurrentUsers(socket) {
+    const info = clientInfo[socket.id]
+    const users = []
+
+    if (typeof info === 'undefined') {
+        return
+    }
+
+    Object.keys(clientInfo).forEach((socketId) => {
+        const userInfo = clientInfo[socketId]
+
+        if (info.room === userInfo.room) {
+            users.push(userInfo.name)
+        }
+    })
+
+    const message = new Message('Current users: ' + users.join(', '))
+    socket.emit('message', message)
+}
 
 app.use(express.static(path.join(__dirname, 'public')))
 
@@ -25,6 +44,9 @@ io.on('connection', (socket) => {
     })
 
     socket.on('message', (message) => {
+        if (message.text === '@currentUsers') {
+            return sendCurrentUsers(socket)
+        }
         console.log('Message recieved: ', message.text)
         console.log('emit to ', clientInfo[socket.id].room )
         io.to(clientInfo[socket.id].room).emit('message', message)
