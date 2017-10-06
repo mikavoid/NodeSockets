@@ -28,12 +28,9 @@ $(document).ready(function () {
     }
 
     socket.on('connect', function () {
-        const $meta = $('#meta')
-        const p = `<p>
-        <em>${name}</em> has joined the room : <strong>${room}</strong>
-        </p>`
-
-        $meta.append(p)
+        const $roomName = $('.room-name')
+        $roomName.text(room)
+        socket.emit('joinRoom', {name, room})
     })
 
     socket.on('message', function (message) {
@@ -45,7 +42,7 @@ $(document).ready(function () {
         const $message = $(this).find('#message')
         const message = buildMessageFromText($message.val())
         socket.emit('message', message)
-        addMessageToList(message)
+        // addMessageToList(message)
         $message.val('')
     })
 })
