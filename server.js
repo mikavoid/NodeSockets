@@ -30,6 +30,15 @@ io.on('connection', (socket) => {
         io.to(clientInfo[socket.id].room).emit('message', message)
     })
 
+    socket.on('disconnect', () => {
+        if (typeof clientInfo[socket.id] !== undefined) {
+            const message = new Message(clientInfo[socket.id].name + ' has left!')
+            socket.leave(clientInfo[socket.id].room)
+            io.to(clientInfo[socket.id].room).emit('message', message)
+            delete clientInfo[socket.id]
+        }
+    })
+
     const welcome = new Message('Welcome to the Chat Application')
     welcome.send(socket)
 })
